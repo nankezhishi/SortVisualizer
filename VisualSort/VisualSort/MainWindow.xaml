@@ -1,0 +1,66 @@
+﻿<Window x:Class="VisualSort.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:VisualSort"
+        Title="Visual Sorter"
+        Height="350" Width="525"
+        Name="root">
+    <Window.Resources>
+        <local:IntToColorConverter x:Key="IntToColorConverter" />
+    </Window.Resources>
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top">
+            <Button Content="Run" Click="OnRunButtonClick" />
+            <Button Content="Step" Click="OnStepButtonClick" />
+        </ToolBar>
+        <DockPanel DockPanel.Dock="Top" Margin="5">
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,5">
+                <TextBlock Text="Step Duration: "
+                           Margin="5,3" />
+                <Slider x:Name="stepDurationSlide"
+                        TickFrequency="5"
+                        TickPlacement="BottomRight"
+                        Interval="5"
+                        Minimum="5" Maximum="200" />
+            </DockPanel>
+            <StackPanel DockPanel.Dock="Top"
+                        Orientation="Horizontal">
+                <Button Content="Sort" Click="OnSortClick" Margin="0,0,7,0" Width="75" />
+                <Button Content="Disorder" Click="OnDisorderClick" Width="75" />
+            </StackPanel>
+        </DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <TextBlock>
+                        Compared <Run Text="{Binding ComparedCount, ElementName=root}" /> times.
+                    </TextBlock>
+                    <TextBlock>
+                        Exchanged <Run Text="{Binding ExchangedCount, ElementName=root}" /> times.
+                    </TextBlock>
+                </StackPanel>
+                <ListBox x:Name="sorterSelector"
+                         IsSynchronizedWithCurrentItem="True"
+                         SelectedItem="{Binding Path=SelectedSorter, ElementName=root, Mode=OneWayToSource}"
+                         ItemsSource="{Binding Path=Sorters, ElementName=root}" />
+            </DockPanel>
+            <GridSplitter Grid.Column="1" VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch" />
+            <ListBox Grid.Column="2"
+                     ItemsSource="{Binding ItemsSource,ElementName=root}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Foreground" Value="Red" />
+                        <Setter Property="Content" Value="{Binding Value}" />
+                        <Setter Property="Background" Value="{Binding Value, Converter={StaticResource IntToColorConverter}}" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Grid>
+    </DockPanel>
+</Window>
