@@ -1,17 +1,30 @@
 ﻿<Window x:Class="VisualSort.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:e="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:local="clr-namespace:VisualSort"
         Title="Visual Sorter"
-        Height="350" Width="525"
-        Name="root">
+        Height="350" Width="525">
     <Window.Resources>
         <local:IntToColorConverter x:Key="IntToColorConverter" />
     </Window.Resources>
     <DockPanel>
         <ToolBar DockPanel.Dock="Top">
-            <Button Content="Run" Click="OnRunButtonClick" />
-            <Button Content="Step" Click="OnStepButtonClick" />
+            <Button Content="Run">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <e:CallMethodAction MethodName="DoSort" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Button Content="Step">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Step">
+                        <e:CallMethodAction MethodName="DoSort" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
         </ToolBar>
         <DockPanel DockPanel.Dock="Top" Margin="5">
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,5">
@@ -21,12 +34,30 @@
                         TickFrequency="5"
                         TickPlacement="BottomRight"
                         Interval="5"
-                        Minimum="5" Maximum="200" />
+                        Minimum="5" Maximum="200">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewMouseUp">
+                            <e:ChangePropertyAction TargetObject="{Binding}" PropertyName="StepDuration" Value="{Binding Value, ElementName=stepDurationSlide}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Slider>
             </DockPanel>
             <StackPanel DockPanel.Dock="Top"
                         Orientation="Horizontal">
-                <Button Content="Sort" Click="OnSortClick" Margin="0,0,7,0" Width="75" />
-                <Button Content="Disorder" Click="OnDisorderClick" Width="75" />
+                <Button Content="Sort" Margin="0,0,7,0" Width="75">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <e:CallMethodAction MethodName="DoSort" TargetObject="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="Disorder" Width="75">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <e:CallMethodAction MethodName="Disorder" TargetObject="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
             </StackPanel>
         </DockPanel>
         <Grid>
@@ -38,21 +69,21 @@
             <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom">
                     <TextBlock>
-                        Compared <Run Text="{Binding ComparedCount, ElementName=root}" /> times.
+                        Compared <Run Text="{Binding ComparedCount}" /> times.
                     </TextBlock>
                     <TextBlock>
-                        Exchanged <Run Text="{Binding ExchangedCount, ElementName=root}" /> times.
+                        Exchanged <Run Text="{Binding ExchangedCount}" /> times.
                     </TextBlock>
                 </StackPanel>
                 <ListBox x:Name="sorterSelector"
                          IsSynchronizedWithCurrentItem="True"
-                         SelectedItem="{Binding Path=SelectedSorter, ElementName=root, Mode=OneWayToSource}"
-                         ItemsSource="{Binding Path=Sorters, ElementName=root}" />
+                         SelectedItem="{Binding Path=SelectedSorter, Mode=OneWayToSource}"
+                         ItemsSource="{Binding Path=Sorters}" />
             </DockPanel>
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch" />
             <ListBox Grid.Column="2"
-                     ItemsSource="{Binding ItemsSource,ElementName=root}">
+                     ItemsSource="{Binding ItemsSource}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Foreground" Value="Red" />

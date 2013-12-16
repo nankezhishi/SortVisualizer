@@ -133,6 +133,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\IObservableEvents.cs" />
     <Compile Include="DataItem.cs" />
     <Compile Include="IntToColorConverter.cs" />
     <Compile Include="Core\IByStepSorter.cs" />
@@ -142,6 +143,9 @@
     <Compile Include="Sorters\HeapSort.cs" />
     <Compile Include="Sorters\QuickSort.cs" />
     <Compile Include="Sorters\BubleSorter.cs" />
+    <Compile Include="Utils\ExpressionExtensions.cs" />
+    <Compile Include="Utils\ReactiveExtensions.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

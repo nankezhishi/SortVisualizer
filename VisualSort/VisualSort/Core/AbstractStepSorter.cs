@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reactive;
 using System.Reactive.Linq;
+using VisualSort.Core;
+using VisualSort.Utils;
 
 namespace VisualSort.Sorters
 {
-    public abstract class AbstractStepSorter<T> : NotifyObject, IByStepSorter<T>
+    public abstract class AbstractStepSorter<T> : NotifyObject, IByStepSorter<T>, IObservableEvents
         where T : IComparable<T>
     {
         protected IList<T> _collection;
@@ -22,7 +26,7 @@ namespace VisualSort.Sorters
                 // Reinitialize the stepper with new duration.
                 if (_subscription != null)
                 {
-                    CreateSubscription();
+                    CreateExecutor();
                 }
             }
         }
@@ -52,7 +56,7 @@ namespace VisualSort.Sorters
         {
             _collection = collection;
             _sorterEnumerator = InitializeSorter().GetEnumerator();
-            CreateSubscription();
+            CreateExecutor();
         }
 
         protected abstract IEnumerable<int> InitializeSorter();
@@ -88,7 +92,7 @@ namespace VisualSort.Sorters
             }
         }
 
-        private IDisposable CreateSubscription()
+        private IDisposable CreateExecutor()
         {
             if (_subscription != null)
             {
@@ -106,6 +110,13 @@ namespace VisualSort.Sorters
             {
                 RaiseSortFinishedEvent();
             }
+        }
+
+        public IObservable<EventPattern<T>> ObserveEvent<T>(Func<EventHandler<T>> @event) where T : EventArgs
+        {
+            var handler = @event();
+
+            return handler.ToObservable();
         }
     }
 }
